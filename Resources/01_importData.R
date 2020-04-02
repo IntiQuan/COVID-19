@@ -12,10 +12,12 @@ if (LOAD) {
   # Load data
   dConfirmed <- IQRtools::IQRloadCSVdata("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv")
   dDeaths <-IQRtools::IQRloadCSVdata("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv")
+  dRecovered <-IQRtools::IQRloadCSVdata("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv")
   
   data <- rbind(
     cbind(TYPE="Confirmed",dConfirmed),
-    cbind(TYPE="Deaths",dDeaths)
+    cbind(TYPE="Deaths",dDeaths),
+    cbind(TYPE="Recovered",dRecovered)
   )
   data$Province.State <- NULL
   data$Lat <- NULL
