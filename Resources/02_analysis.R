@@ -141,6 +141,7 @@ genplots <- function(countries) {
   dataPlot <- do.call(rbind,lapply(split(dataPlot,dataPlot$COUNTRY), function (d) {
     d$diffConfirmed <- c(NA,diff(d$Confirmed))
     d$diffDeath <- c(NA,diff(d$Death))
+    d$diffRecovered <- c(NA,diff(d$Recovered))
     ixend <- nrow(d)
     d <- d[(ixend-Ndays):ixend,]
     d$Days <- -Ndays:0
@@ -165,5 +166,53 @@ genplots <- function(countries) {
     xlab("Days (0 indicates most recent data point)") + 
     ylab("Daily cases - Death")
   
-  list(p1,p2,p3,p4,p5,p6,p7,p8)
+  p9 <- IQRggplot(dataPlot,aes(x = Days,y=diffRecovered,fill=COUNTRY)) + 
+    geom_bar(stat="identity",alpha=0.5) + 
+    geom_smooth(method="loess",aes(color=COUNTRY),se=FALSE) +
+    facet_wrap(.~COUNTRY,scales = "free",ncol = 2) + 
+    scale_fill_IQRtools() + 
+    scale_color_IQRtools() + 
+    xlab("Days (0 indicates most recent data point)") + 
+    ylab("Daily cases - Recovered")
+  
+  
+  ####################################################################################
+  # Percetage increase
+  ####################################################################################
+  
+  dataPlot <- dataSave[dataSave$COUNTRY %in% countries,]
+  
+  Ndays <- 40
+  dataPlot <- do.call(rbind,lapply(split(dataPlot,dataPlot$COUNTRY), function (d) {
+    d$diffConfirmed <- c(NA,diff(d$Confirmed))
+    d$Confirmed <- d$Confirmed
+    d$Death <- d$Death
+    d$Recovered <- d$Recovered
+    ixend <- nrow(d)
+    d <- d[(ixend-Ndays):ixend,]
+    d$Days <- -Ndays:0
+    d
+  }))
+  
+  p10 <- IQRggplot(dataPlot,aes(x = Days,y=100*diffConfirmed/(Confirmed-Death-Recovered),fill=COUNTRY)) + 
+    geom_point(alpha=0.5) + 
+    geom_smooth(method="loess",aes(color=COUNTRY),se=FALSE) +
+    facet_wrap(.~COUNTRY,scales = "free",ncol = 2) + 
+    scale_fill_IQRtools() + 
+    scale_color_IQRtools() + 
+    xlab("Days (0 indicates most recent data point)") + 
+    ylab("Daily confirmed cases in % of active cases")
+  
+  p11 <- IQRggplot(dataPlot,aes(x = Days,y=100*diffConfirmed/(Confirmed-Death-Recovered),fill=COUNTRY)) + 
+    geom_point(alpha=0.5) + 
+    geom_smooth(method="loess",aes(color=COUNTRY),se=FALSE) +
+    facet_wrap(.~COUNTRY,scales = "free",ncol = 2) + 
+    scale_fill_IQRtools() + 
+    scale_color_IQRtools() + 
+    scale_y_log10_IQRtools() +
+    xlab("Days (0 indicates most recent data point)") + 
+    ylab("Daily confirmed cases in % of active cases")
+  
+  
+  list(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11)
 }
