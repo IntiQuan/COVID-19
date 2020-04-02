@@ -182,7 +182,7 @@ genplots <- function(countries) {
   
   dataPlot <- dataSave[dataSave$COUNTRY %in% countries,]
   
-  Ndays <- 40
+  Ndays <- 60
   dataPlot <- do.call(rbind,lapply(split(dataPlot,dataPlot$COUNTRY), function (d) {
     d$diffConfirmed <- c(NA,diff(d$Confirmed))
     d$Confirmed <- d$Confirmed
@@ -197,7 +197,7 @@ genplots <- function(countries) {
   p10 <- IQRggplot(dataPlot,aes(x = Days,y=100*diffConfirmed/(Confirmed-Death-Recovered),fill=COUNTRY)) + 
     geom_point(alpha=0.5) + 
     geom_smooth(method="loess",aes(color=COUNTRY),se=FALSE) +
-    facet_wrap(.~COUNTRY,scales = "free",ncol = 2) + 
+    facet_wrap(.~COUNTRY,scales = "fixed",ncol = 2) + 
     scale_fill_IQRtools() + 
     scale_color_IQRtools() + 
     xlab("Days (0 indicates most recent data point)") + 
@@ -206,7 +206,7 @@ genplots <- function(countries) {
   p11 <- IQRggplot(dataPlot,aes(x = Days,y=100*diffConfirmed/(Confirmed-Death-Recovered),fill=COUNTRY)) + 
     geom_point(alpha=0.5) + 
     geom_smooth(method="loess",aes(color=COUNTRY),se=FALSE) +
-    facet_wrap(.~COUNTRY,scales = "free",ncol = 2) + 
+    facet_wrap(.~COUNTRY,scales = "fixed",ncol = 2) + 
     scale_fill_IQRtools() + 
     scale_color_IQRtools() + 
     scale_y_log10_IQRtools() +
