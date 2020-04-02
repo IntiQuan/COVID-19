@@ -88,6 +88,16 @@ renderPlot({
 },height = 600)
 ```
 
+### Daily cases - Recoveres
+Daily deaths for the last 31 days. Time 0 indicates "Today" or rather the last available time point.
+The solid line is computerd using a simple loess smoother.
+
+```{r plot1b, echo=FALSE}
+renderPlot({
+  genplots(input$countries)[[9]]
+},height = 600)
+```
+
 
 ### Absolute Number of Cases
 Absolute number of cases for confirmed infections and deaths are plotted below. 
@@ -156,6 +166,30 @@ renderPlot({
   genplots(input$countries)[[5]]
 },height = 400)
 ```
+
+
+### Number of relative newly confirmed cases (`r dataLast$DATE[1]`)
+The number of daily new cases relative to total active cases (Confirmed-Dead-Recovered)
+
+Date considered here: `r dataLast$DATE[1]`
+
+```{r plot10, echo=FALSE}
+renderPlot({
+  genplots(input$countries)[[10]]
+},height = 400)
+```
+
+### Number of relative newly confirmed cases (`r dataLast$DATE[1]`)
+Same on log-scale 
+
+Date considered here: `r dataLast$DATE[1]`
+
+```{r plot11, echo=FALSE}
+renderPlot({
+  genplots(input$countries)[[11]]
+},height = 400)
+```
+
 
 
     
