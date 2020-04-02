@@ -182,7 +182,7 @@ genplots <- function(countries) {
   
   dataPlot <- dataSave[dataSave$COUNTRY %in% countries,]
   
-  Ndays <- 60
+  Ndays <- 40
   dataPlot <- do.call(rbind,lapply(split(dataPlot,dataPlot$COUNTRY), function (d) {
     d$diffConfirmed <- c(NA,diff(d$Confirmed))
     d$Confirmed <- d$Confirmed
