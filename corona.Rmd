@@ -90,11 +90,11 @@ renderPlot({
 },height = 600)
 ```
 
-### Daily cases - Recoveres
+### Daily cases - Recovered
 Daily deaths for the last 31 days. Time 0 indicates "Today" or rather the last available time point.
 The solid line is computerd using a simple loess smoother.
 
-```{r plot1b, echo=FALSE}
+```{r plot1c, echo=FALSE}
 renderPlot({
   genplots(input$countries)[[9]]
 },height = 600)
@@ -177,7 +177,7 @@ Date considered here: `r dataLast$DATE[1]`
 ```{r plot10, echo=FALSE}
 renderPlot({
   genplots(input$countries)[[10]]
-},height = 400)
+},height = 600)
 ```
 
 ### Number of relative newly confirmed cases (`r dataLast$DATE[1]`)
@@ -188,7 +188,7 @@ Date considered here: `r dataLast$DATE[1]`
 ```{r plot11, echo=FALSE}
 renderPlot({
   genplots(input$countries)[[11]]
-},height = 400)
+},height = 600)
 ```
 
 
