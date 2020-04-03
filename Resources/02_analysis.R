@@ -185,6 +185,8 @@ genplots <- function(countries) {
   Ndays <- 40
   dataPlot <- do.call(rbind,lapply(split(dataPlot,dataPlot$COUNTRY), function (d) {
     d$diffConfirmed <- c(NA,diff(d$Confirmed))
+    d$diffDeath <- c(NA,diff(d$Death))
+    d$diffRecovered <- c(NA,diff(d$Recovered))
     d$Confirmed <- d$Confirmed
     d$Death <- d$Death
     d$Recovered <- d$Recovered
@@ -194,25 +196,39 @@ genplots <- function(countries) {
     d
   }))
   
-  p10 <- IQRggplot(dataPlot,aes(x = Days,y=100*diffConfirmed/(Confirmed-Death-Recovered),fill=COUNTRY)) + 
-    geom_point(alpha=0.5) + 
+  p10 <- IQRggplot(dataPlot,aes(x = Days,y=100*diffConfirmed/(Confirmed),fill=COUNTRY)) + 
+    #geom_point(alpha=0.5) + 
     geom_smooth(method="loess",aes(color=COUNTRY),se=FALSE) +
-    facet_wrap(.~COUNTRY,scales = "fixed",ncol = 2) + 
-    scale_fill_IQRtools() + 
-    scale_color_IQRtools() + 
-    xlab("Days (0 indicates most recent data point)") + 
-    ylab("Daily confirmed cases in % of active cases")
-  
-  p11 <- IQRggplot(dataPlot,aes(x = Days,y=100*diffConfirmed/(Confirmed-Death-Recovered),fill=COUNTRY)) + 
-    geom_point(alpha=0.5) + 
-    geom_smooth(method="loess",aes(color=COUNTRY),se=FALSE) +
-    facet_wrap(.~COUNTRY,scales = "fixed",ncol = 2) + 
+    #facet_wrap(.~COUNTRY,scales = "fixed",ncol = 2) + 
     scale_fill_IQRtools() + 
     scale_color_IQRtools() + 
     scale_y_log10_IQRtools() +
     xlab("Days (0 indicates most recent data point)") + 
     ylab("Daily confirmed cases in % of active cases")
   
+  p11 <- IQRggplot(dataPlot,aes(x = Days,y=100*diffConfirmed/(Confirmed-Death-Recovered),fill=COUNTRY)) + 
+    #geom_point(alpha=0.5) + 
+    geom_smooth(method="loess",aes(color=COUNTRY),se=FALSE) +
+    #facet_wrap(.~COUNTRY,scales = "fixed",ncol = 2) + 
+    scale_fill_IQRtools() + 
+    scale_color_IQRtools() + 
+    scale_y_log10_IQRtools() +
+    xlab("Days (0 indicates most recent data point)") + 
+    ylab("Daily confirmed cases in % of active cases")
   
-  list(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11)
+  p12 <- IQRggplot(subset(dataPlot, Days > -10 &
+                            (diffConfirmed > diffRecovered + diffDeath)),
+                   aes(x = Days,y=log(2)/log(1+(diffConfirmed-diffRecovered-diffDeath)/(Confirmed-Death-Recovered)),fill=COUNTRY)) + 
+    geom_point(aes(color=COUNTRY)) + 
+    geom_line(aes(color=COUNTRY)) +
+    #facet_wrap(.~COUNTRY,scales = "fixed",ncol = 2) + 
+    scale_fill_IQRtools() + 
+    scale_color_IQRtools() + 
+    scale_y_continuous(limits=c(0,50)) +
+    xlab("Days (0 indicates most recent data point)") + 
+    ylab("Days to double the number of active cases")
+  
+  
+  
+  list(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12)
 }

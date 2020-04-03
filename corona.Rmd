@@ -169,8 +169,8 @@ renderPlot({
 },height = 400)
 ```
 
-### Number of relative newly confirmed cases (`r dataLast$DATE[1]`)
-The number of daily new cases relative to total active cases (Confirmed-Dead-Recovered)
+### Daily confirmed cases relative to current confirmed (`r dataLast$DATE[1]`)
+The number of new daily new cases relative to total confirmed cases
 
 Date considered here: `r dataLast$DATE[1]`
 
@@ -180,8 +180,8 @@ renderPlot({
 },height = 600)
 ```
 
-### Number of relative newly confirmed cases (`r dataLast$DATE[1]`)
-Same on log-scale 
+### Daily confirmed cases relative to current active (`r dataLast$DATE[1]`)
+The number of new daily new cases relative to total active cases I = Confirmed-Dead-Recovered. Under the assumption of a approximately constant number of Susceptibles, this ratio corresponds to the parameter beta in the standard * <a href="https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology">SIR model</a>.
 
 Date considered here: `r dataLast$DATE[1]`
 
@@ -191,5 +191,15 @@ renderPlot({
 },height = 600)
 ```
 
+### Time to double (`r dataLast$DATE[1]`)
+Based on the previous plot, one can derive an estimate for the number of days to double the number of active cases as frequently discussed. States that have a decreasing number of active cases are removed from the plot.
+
+Date considered here: `r dataLast$DATE[1]`
+
+```{r plot12, echo=FALSE}
+renderPlot({
+  genplots(input$countries)[[11]]
+},height = 600)
+```
 
 
