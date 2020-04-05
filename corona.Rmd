@@ -25,12 +25,17 @@ source("Resources/02_analysis.R") # This script might not be needed ... single p
 
 ---
 
-## Source data 
+## Source data
 
 * <a href="https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series">Global Data (time_series_covid19_confirmed_global.csv and time_series_covid19_deaths_global.csv)</a>
 * <a href="https://www.worldometers.info/world-population/population-by-country/">Population per country</a>
 
-```{r load_data, echo=FALSE}
+## Source code
+
+* Source code is available <a href="https://github.com/IntiQuan/COVID-19">here on GitHub</a>.
+* Shiny Document running on an <a href="https://iqdesktop.intiquan.com">IQdesktop container</a>.
+
+```{r load_data, echo=FALSE, cache=FALSE}
 # Load the processed source data (all countries included)
 data <- IQRloadCSVdata("Resources/data.csv")
 # Get last day data
@@ -43,7 +48,7 @@ dataLast <- do.call(rbind,lapply(split(data,data$COUNTRY), function (d) d[nrow(d
 ## Just some graphics
 COVID-19 keeps us all busy. The plots below have been quickly put together to monitor the developments. Far more interesting things could be done with the data - but there are other commitments at the moment. Still - I find them useful.
 
-```{r country_selection, echo=FALSE}
+```{r country_selection, echo=FALSE, cache=FALSE}
 inputPanel(
   selectInput("countries", "Selected Countries:",
               c("China", "Italy", "Iran", "Spain", "Germany", "United States",  "France", "South Korea", "Switzerland", "United Kingdom", "Netherlands",  "Austria", "Belgium", "Norway", "Sweden", "Denmark", "Japan",  "Malaysia", "Canada", "Portugal", "Australia", "Israel", "Brazil",  "Ireland", "Qatar", "Pakistan", "Greece", "Finland", "Poland",  "Singapore", "Luxembourg", "Iceland", "Indonesia", "Slovenia",  "Bahrain", "Romania", "Saudi Arabia", "Thailand", "Estonia",  "Egypt", "Chile", "Peru", "Philippines", "Ecuador", "Russia",  "India", "Iraq", "Turkey", "Lebanon", "South Africa", "Kuwait",  "United Arab Emirates", "Slovakia", "San Marino", "Mexico", "Armenia",  "Panama", "Croatia", "Serbia", "Colombia", "Argentina", "Bulgaria",  "Algeria", "Latvia", "Vietnam", "Uruguay", "Brunei", "Hungary",  "Costa Rica", "Jordan", "Cyprus", "Albania", "Bosnia and Herzegovina",  "Morocco", "Sri Lanka", "Andorra", "Malta", "Belarus", "Moldova",  "North Macedonia", "Oman", "Azerbaijan", "Kazakhstan", "Venezuela",  "Georgia", "Tunisia", "Cambodia", "Lithuania", "Dominican Republic",  "Burkina Faso", "Senegal", "Liechtenstein", "New Zealand", "Martinique",  "Uzbekistan", "Afghanistan", "Bangladesh", "Ukraine", "Jamaica",  "Cameroon", "Maldives", "Bolivia", "Honduras", "Cuba", "Ghana",  "Paraguay", "Guatemala", "Trinidad and Tobago", "Nigeria", "Rwanda",  "Guyana", "Kenya", "Monaco", "Equatorial Guinea", "Ethiopia",  "Mongolia", "Seychelles", "Tanzania", "Barbados", "Kyrgyzstan",  "Mauritius", "Montenegro", "Namibia", "Benin", "Liberia", "Mauritania",  "Saint Lucia", "Sudan", "Zambia", "Antigua and Barbuda", "Bhutan",  "Central African Republic", "Chad", "Djibouti", "El Salvador",  "Eswatini", "Fiji", "Gabon", "Guinea", "Holy See", "Nepal", "Nicaragua",  "Somalia", "Suriname", "Togo"),
@@ -52,17 +57,34 @@ inputPanel(
 )
 ```
 
+### Daily confirmed cases relative to current active (`r dataLast$DATE[1]`)
+The plot shows the number of new daily new cases relative to total active cases. Total active cases (I) are defined by number of Confirmed-Dead-Recovered cases. 
+
+Under the assumption of a approximately constant number of Susceptibles (S), this ratio corresponds to the parameter beta 
+in the standard <a href="https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology">SIR model</a>.
+
+**Simple Interpretation:** A decrease shows effectiveness of measures to control the spread. Increases show that measures are not sufficient to control the spread. Initial decreases are biased by the fact that testing was ramped up.
+
+Date considered here: `r dataLast$DATE[1]`
+
+Vertical dashed lines indicate Sundays. In some plots a "weekend reporting bias" can be 
+observed => useful to indicate weekends in the graphics.
+
+```{r plot11, echo=FALSE, cache=FALSE}
+renderPlot({
+  genplots(input$countries)[[11]]
+},height = 600)
+```
+
 
 ### Cases per Million Inhabitants since > 5 Confirmed Cases per Million
 This plot shows the number of cases for confirmed infections and deaths per 1 Million of inhabitants.
 
-**"Day 0"** in this plot is the day at which a country the first time reported confirmed infections
-greater than 5 per Million of inhabitants. 
+**"Day 0"** in this plot is the day at which a country the first time reported confirmed infections greater than 5 per Million of inhabitants. 
 
-Both normalizations (in terms of time and population) are important to compare the infection dynamics
-in the different countries.
+Both normalizations (in terms of time and population) are important to compare the infection dynamics in the different countries.
 
-```{r plot6, echo=FALSE}
+```{r plot6, echo=FALSE, cache=FALSE}
 # The plot functions are stored in the script ... 02_analysis.R
 # THIS IS NOT NICE ... just happened because of old shiny thingy ... here it could be made nicer I guess.-
 renderPlot({
@@ -71,30 +93,36 @@ renderPlot({
 ```
 
 ### Daily cases - Confirmed
-Daily confirmed cases for the last 31 days. Time 0 indicates "Today" or rather the last available time point.
-The solid line is computerd using a simple loess smoother.
+Daily confirmed cases for the last 31 days. Time 0 indicates "Today" or rather the last available time point. The solid line is computed using a simple loess smoother.
 
-```{r plot1a, echo=FALSE}
+Vertical dashed lines indicate Sundays. In some plots a "weekend reporting bias" can be 
+observed => useful to indicate weekends in the graphics.
+
+```{r plot1ax, echo=FALSE, cache=FALSE}
 renderPlot({
   genplots(input$countries)[[7]]
 },height = 600)
 ```
 
 ### Daily cases - Deaths
-Daily deaths for the last 31 days. Time 0 indicates "Today" or rather the last available time point.
-The solid line is computerd using a simple loess smoother.
+Daily deaths for the last 31 days. Time 0 indicates "Today" or rather the last available time point. The solid line is computed using a simple loess smoother.
 
-```{r plot1b, echo=FALSE}
+Vertical dashed lines indicate Sundays. In some plots a "weekend reporting bias" can be 
+observed => useful to indicate weekends in the graphics.
+
+```{r plot1b, echo=FALSE, cache=FALSE}
 renderPlot({
   genplots(input$countries)[[8]]
 },height = 600)
 ```
 
 ### Daily cases - Recovered
-Daily deaths for the last 31 days. Time 0 indicates "Today" or rather the last available time point.
-The solid line is computerd using a simple loess smoother.
+Daily deaths for the last 31 days. Time 0 indicates "Today" or rather the last available time point. The solid line is computed using a simple loess smoother.
 
-```{r plot1c, echo=FALSE}
+Vertical dashed lines indicate Sundays. In some plots a "weekend reporting bias" can be 
+observed => useful to indicate weekends in the graphics.
+
+```{r plot1c, echo=FALSE, cache=FALSE}
 renderPlot({
   genplots(input$countries)[[9]]
 },height = 600)
@@ -112,7 +140,7 @@ Absolute number of cases for confirmed infections and deaths are plotted below.
   typically have also relative numbers to the population.
 * Comparison between countries as below also suffers from different times of onset of the epidemic.
 * The most informative, and currently least biased measure is deaths.
-```{r plot1, echo=FALSE}
+```{r plot1, echo=FALSE, cache=FALSE}
 renderPlot({
   genplots(input$countries)[[1]]
 },height = 400)
@@ -129,7 +157,7 @@ over Switzerland (for example).
 per population, the higher the death versus confirmed rate. Germany has conducted over 100000 test (status 19th March 2020)
 and South Korea even several folds higher. 
 
-```{r plot2, echo=FALSE}
+```{r plot2, echo=FALSE, cache=FALSE}
 renderPlot({
   genplots(input$countries)[[2]]
 },height = 400)
@@ -141,7 +169,7 @@ Relative number of cases (per Million inhabitants) for confirmed infections and 
 Far more interesting plot than the absolute number of cases. Just compare your countries of interest and 
 make up your own mind.
 
-```{r plot3, echo=FALSE}
+```{r plot3, echo=FALSE, cache=FALSE}
 renderPlot({
   genplots(input$countries)[[3]]
 },height = 400)
@@ -152,7 +180,7 @@ The following plot shows the relative number of deaths vs. confirmed cases.
 
 Date considered here: `r dataLast$DATE[1]`
 
-```{r plot4, echo=FALSE}
+```{r plot4, echo=FALSE, cache=FALSE}
 renderPlot({
   genplots(input$countries)[[4]]
 },height = 400)
@@ -163,7 +191,7 @@ Relative number of cases (per Million inhabitants) for confirmed infections and 
 
 Date considered here: `r dataLast$DATE[1]`
 
-```{r plot5, echo=FALSE}
+```{r plot5, echo=FALSE, cache=FALSE}
 renderPlot({
   genplots(input$countries)[[5]]
 },height = 400)
@@ -174,20 +202,9 @@ The number of new daily new cases relative to total confirmed cases
 
 Date considered here: `r dataLast$DATE[1]`
 
-```{r plot10, echo=FALSE}
+```{r plot10, echo=FALSE, cache=FALSE}
 renderPlot({
   genplots(input$countries)[[10]]
-},height = 600)
-```
-
-### Daily confirmed cases relative to current active (`r dataLast$DATE[1]`)
-The number of new daily new cases relative to total active cases I = Confirmed-Dead-Recovered. Under the assumption of a approximately constant number of Susceptibles, this ratio corresponds to the parameter beta in the standard * <a href="https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology">SIR model</a>.
-
-Date considered here: `r dataLast$DATE[1]`
-
-```{r plot11, echo=FALSE}
-renderPlot({
-  genplots(input$countries)[[11]]
 },height = 600)
 ```
 
@@ -196,9 +213,9 @@ Based on the previous plot, one can derive an estimate for the number of days to
 
 Date considered here: `r dataLast$DATE[1]`
 
-```{r plot12, echo=FALSE}
+```{r plot12, echo=FALSE, cache=FALSE}
 renderPlot({
-  genplots(input$countries)[[11]]
+  genplots(input$countries)[[12]]
 },height = 600)
 ```
 

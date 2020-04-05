@@ -23,7 +23,7 @@ if (LOAD) {
   data$Lat <- NULL
   data$Long <- NULL
   
-  # Combine by Country and Type
+  # Combine by Country and Type (since each country might be split into multiple regions)
   dS <- split(data,data$Country.Region)
   data <- do.call(rbind,lapply(seq_along(dS), function (k) {
     d <- dS[[k]]

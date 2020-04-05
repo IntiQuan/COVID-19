@@ -11,7 +11,7 @@ genplots <- function(countries) {
   
   # Long again
   data <- tidyr::gather(data,TYPE,VALUE,-COUNTRY,-DATE)
-
+  
   # Plot 1 - Standard stuff absolute values
   dataPlot <- data[data$COUNTRY %in% countries & data$TYPE %in% c("Confirmed","Deaths"),]
   dataPlot <- dataPlot[dataPlot$VALUE>0,]
@@ -103,7 +103,7 @@ genplots <- function(countries) {
   # Idea: - remove data with less than 10 confirmed cases per million inhabitants
   #       - shift time axis to call Day 0 the first day with >100 cases
   ####################################################################################
-
+  
   dataTimeShifted <- do.call(rbind,lapply(split(dataSave, dataSave$COUNTRY), function (d) {
     d <- d[d$CONFIRMED_PER_MILLION_INHABITANTS>5,]
     if (nrow(d)==0) return(NULL)
@@ -132,7 +132,7 @@ genplots <- function(countries) {
   p6
   
   ####################################################################################
-  # Daily cases for last 30
+  # Daily cases for last 30/1 days
   ####################################################################################
   
   dataPlot <- dataSave[dataSave$COUNTRY %in% countries,]
@@ -148,14 +148,18 @@ genplots <- function(countries) {
     d
   }))
   
- p7 <- IQRggplot(dataPlot,aes(x = Days,y=diffConfirmed,fill=COUNTRY)) + 
+  # Determine Sundays
+  SUNDAYS <- dataPlot$Days[format(as.POSIXct(dataPlot$DATE),format = "%w") == 0]
+  
+  p7 <- IQRggplot(dataPlot,aes(x = Days,y=diffConfirmed,fill=COUNTRY)) + 
     geom_bar(stat="identity",alpha=0.5) + 
     geom_smooth(method="loess",aes(color=COUNTRY),se=FALSE) +
     facet_wrap(.~COUNTRY,scales = "free",ncol = 2) + 
     scale_fill_IQRtools() + 
     scale_color_IQRtools() + 
     xlab("Days (0 indicates most recent data point)") + 
-    ylab("Daily cases - Confirmed")
+    ylab("Daily cases - Confirmed") +
+    geom_vline(xintercept = SUNDAYS,linetype="dashed")
   
   p8 <- IQRggplot(dataPlot,aes(x = Days,y=diffDeath,fill=COUNTRY)) + 
     geom_bar(stat="identity",alpha=0.5) + 
@@ -164,7 +168,8 @@ genplots <- function(countries) {
     scale_fill_IQRtools() + 
     scale_color_IQRtools() + 
     xlab("Days (0 indicates most recent data point)") + 
-    ylab("Daily cases - Death")
+    ylab("Daily cases - Death") +
+    geom_vline(xintercept = SUNDAYS,linetype="dashed")
   
   p9 <- IQRggplot(dataPlot,aes(x = Days,y=diffRecovered,fill=COUNTRY)) + 
     geom_bar(stat="identity",alpha=0.5) + 
@@ -173,7 +178,8 @@ genplots <- function(countries) {
     scale_fill_IQRtools() + 
     scale_color_IQRtools() + 
     xlab("Days (0 indicates most recent data point)") + 
-    ylab("Daily cases - Recovered")
+    ylab("Daily cases - Recovered") +
+    geom_vline(xintercept = SUNDAYS,linetype="dashed")
   
   
   ####################################################################################
@@ -196,6 +202,9 @@ genplots <- function(countries) {
     d
   }))
   
+  # Determine Sundays
+  SUNDAYS <- dataPlot$Days[format(as.POSIXct(dataPlot$DATE),format = "%w") == 0]
+  
   p10 <- IQRggplot(dataPlot,aes(x = Days,y=100*diffConfirmed/(Confirmed),fill=COUNTRY)) + 
     #geom_point(alpha=0.5) + 
     geom_smooth(method="loess",aes(color=COUNTRY),se=FALSE) +
@@ -204,7 +213,8 @@ genplots <- function(countries) {
     scale_color_IQRtools() + 
     scale_y_log10_IQRtools() +
     xlab("Days (0 indicates most recent data point)") + 
-    ylab("Daily confirmed cases in % of active cases")
+    ylab("Daily confirmed cases in % of active cases") +
+    geom_vline(xintercept = SUNDAYS,linetype="dashed")
   
   p11 <- IQRggplot(dataPlot,aes(x = Days,y=100*diffConfirmed/(Confirmed-Death-Recovered),fill=COUNTRY)) + 
     #geom_point(alpha=0.5) + 
@@ -214,7 +224,8 @@ genplots <- function(countries) {
     scale_color_IQRtools() + 
     scale_y_log10_IQRtools() +
     xlab("Days (0 indicates most recent data point)") + 
-    ylab("Daily confirmed cases in % of active cases")
+    ylab("Daily confirmed cases in % of active cases") +
+    geom_vline(xintercept = SUNDAYS,linetype="dashed")
   
   p12 <- IQRggplot(subset(dataPlot, Days > -10 &
                             (diffConfirmed > diffRecovered + diffDeath)),
@@ -226,9 +237,8 @@ genplots <- function(countries) {
     scale_color_IQRtools() + 
     scale_y_continuous(limits=c(0,50)) +
     xlab("Days (0 indicates most recent data point)") + 
-    ylab("Days to double the number of active cases")
-  
-  
+    ylab("Days to double the number of active cases") +
+    geom_vline(xintercept = SUNDAYS,linetype="dashed")
   
   list(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12)
 }
