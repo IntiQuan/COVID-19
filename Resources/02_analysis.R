@@ -1,5 +1,9 @@
 
 genplots <- function(countries) {
+  NDAYS <- 270
+  
+  
+  
   data <- IQRloadCSVdata("Resources/data.csv")
   
   # Add additional metrics
@@ -132,12 +136,12 @@ genplots <- function(countries) {
   p6
   
   ####################################################################################
-  # Daily cases for last 30/1 days
+  # Daily cases for last 180/1 days
   ####################################################################################
   
   dataPlot <- dataSave[dataSave$COUNTRY %in% countries,]
   
-  Ndays <- 30
+  Ndays <- NDAYS
   dataPlot <- do.call(rbind,lapply(split(dataPlot,dataPlot$COUNTRY), function (d) {
     d$diffConfirmed <- c(NA,diff(d$Confirmed))
     d$diffDeath <- c(NA,diff(d$Death))
@@ -188,7 +192,7 @@ genplots <- function(countries) {
   
   dataPlot <- dataSave[dataSave$COUNTRY %in% countries,]
   
-  Ndays <- 40
+  Ndays <- NDAYS
   dataPlot <- do.call(rbind,lapply(split(dataPlot,dataPlot$COUNTRY), function (d) {
     d$diffConfirmed <- c(NA,diff(d$Confirmed))
     d$diffDeath <- c(NA,diff(d$Death))

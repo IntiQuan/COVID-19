@@ -93,7 +93,7 @@ renderPlot({
 ```
 
 ### Daily cases - Confirmed
-Daily confirmed cases for the last 31 days. Time 0 indicates "Today" or rather the last available time point. The solid line is computed using a simple loess smoother.
+Daily confirmed cases for the last XYZ days. Time 0 indicates "Today" or rather the last available time point. The solid line is computed using a simple loess smoother.
 
 Vertical dashed lines indicate Sundays. In some plots a "weekend reporting bias" can be 
 observed => useful to indicate weekends in the graphics.
@@ -105,7 +105,7 @@ renderPlot({
 ```
 
 ### Daily cases - Deaths
-Daily deaths for the last 31 days. Time 0 indicates "Today" or rather the last available time point. The solid line is computed using a simple loess smoother.
+Daily deaths for the last XYZ days. Time 0 indicates "Today" or rather the last available time point. The solid line is computed using a simple loess smoother.
 
 Vertical dashed lines indicate Sundays. In some plots a "weekend reporting bias" can be 
 observed => useful to indicate weekends in the graphics.
@@ -117,7 +117,7 @@ renderPlot({
 ```
 
 ### Daily cases - Recovered
-Daily deaths for the last 31 days. Time 0 indicates "Today" or rather the last available time point. The solid line is computed using a simple loess smoother.
+Daily deaths for the last XYZ days. Time 0 indicates "Today" or rather the last available time point. The solid line is computed using a simple loess smoother.
 
 Vertical dashed lines indicate Sundays. In some plots a "weekend reporting bias" can be 
 observed => useful to indicate weekends in the graphics.
